@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prompt Architect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__content container">
+      <div>
+        <p class="eyebrow">Prompt companion</p>
+        <h1>Design reliable prompts without guessing</h1>
+        <p class="lede">Start with a template, outline the task, and preview a clean prompt your model can follow. Everything updates as you type.</p>
+        <div class="hero__cta">
+          <button class="button button--primary" id="startFresh" type="button">Start from scratch</button>
+          <button class="button" id="loadTemplate" type="button">Apply template</button>
+        </div>
+      </div>
+      <div class="badge">
+        <p class="badge__title">Ready-to-use prompt</p>
+        <p class="badge__value" id="wordCount">0 words</p>
+        <p class="badge__hint">Preview updates live</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container layout">
+    <section class="panel">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Inputs</p>
+          <h2>Describe your request</h2>
+          <p class="muted">Fill in what the model needs: who it is, what to do, and how to respond. The more context you provide, the clearer the output.</p>
+        </div>
+        <div class="template-picker">
+          <label class="label" for="template">Template</label>
+          <select id="template">
+            <option value="blank">Blank canvas</option>
+            <option value="analysis">Analysis & decision</option>
+            <option value="writing">Writing coach</option>
+            <option value="coding">Code walkthrough</option>
+          </select>
+        </div>
+      </div>
+
+      <form class="grid" id="promptForm">
+        <label class="field">
+          <span class="label">Role & persona</span>
+          <input type="text" id="role" placeholder="e.g., You are a precise technical writer" />
+          <small>Assign a clear role to anchor the response.</small>
+        </label>
+
+        <label class="field">
+          <span class="label">Goal</span>
+          <input type="text" id="goal" placeholder="What outcome do you want?" />
+          <small>State the purpose in one crisp sentence.</small>
+        </label>
+
+        <label class="field field--wide">
+          <span class="label">Key context</span>
+          <textarea id="context" rows="3" placeholder="Project details, audience, constraints, or links to consider"></textarea>
+        </label>
+
+        <label class="field field--wide">
+          <span class="label">Inputs the user will provide</span>
+          <textarea id="inputs" rows="2" placeholder="List inputs you will supply (data, text, examples)"></textarea>
+        </label>
+
+        <label class="field field--wide">
+          <span class="label">Steps or checklist</span>
+          <textarea id="steps" rows="3" placeholder="Numbered steps the model should follow"></textarea>
+        </label>
+
+        <div class="field">
+          <span class="label">Tone & style</span>
+          <div class="pills" id="tonePills">
+            <button type="button" data-tone="concise">Concise</button>
+            <button type="button" data-tone="friendly">Friendly</button>
+            <button type="button" data-tone="expert">Expert</button>
+            <button type="button" data-tone="persuasive">Persuasive</button>
+          </div>
+          <input type="text" id="tone" placeholder="Describe tone and voice" />
+        </div>
+
+        <label class="field field--wide">
+          <span class="label">Examples or references</span>
+          <textarea id="examples" rows="3" placeholder="Provide positive or negative examples to mimic or avoid"></textarea>
+        </label>
+
+        <label class="field">
+          <span class="label">Response format</span>
+          <textarea id="format" rows="3" placeholder="Bullets, JSON shape, Markdown outline, table headers"></textarea>
+        </label>
+
+        <label class="field">
+          <span class="label">Constraints & guardrails</span>
+          <textarea id="constraints" rows="3" placeholder="Word limits, forbidden content, citations, or safety reminders"></textarea>
+        </label>
+
+        <label class="field">
+          <span class="label">Creativity</span>
+          <input type="range" id="creativity" min="0" max="10" value="4" />
+          <div class="range-labels">
+            <span>Literal</span>
+            <span>Balanced</span>
+            <span>Inventive</span>
+          </div>
+        </label>
+
+        <label class="field">
+          <span class="label">Priority</span>
+          <input type="text" id="priority" placeholder="What matters most? e.g., accuracy over speed" />
+        </label>
+
+        <div class="field field--wide actions">
+          <button class="button" type="button" id="reset">Reset fields</button>
+          <button class="button button--ghost" type="button" id="copy">Copy prompt</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel preview">
+      <div class="panel__header">
+        <div>
+          <p class="eyebrow">Preview</p>
+          <h2>Ready-made prompt</h2>
+          <p class="muted">Copy and paste this into your model, or keep editing the fields to refine it.</p>
+        </div>
+        <div class="pill" id="creativityLabel">Creativity: balanced</div>
+      </div>
+      <article class="prompt" id="promptOutput" aria-live="polite"></article>
+      <div class="supporting">
+        <div>
+          <p class="label">Why it works</p>
+          <ul class="muted" id="whyList">
+            <li>Specific role keeps responses grounded.</li>
+            <li>Explicit inputs reduce back-and-forth.</li>
+            <li>Format hints guide the structure you need.</li>
+          </ul>
+        </div>
+        <div>
+          <p class="label">Quick tips</p>
+          <ol class="muted tips">
+            <li>State the final audience.</li>
+            <li>Prefer numbered steps to vague verbs.</li>
+            <li>Add at least one positive example.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="muted">Prompt Architect helps you scaffold instructions that models can follow. Start from a template and iterate with clarity.</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Prompt copied!</div>
+
+  <script src="script.js"></script>
+</body>
+</html>
